@@ -15,7 +15,8 @@ import base64
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from sklearn.preprocessing import MinMaxScaler
-
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+from tslearn.clustering import KShape
 
 def main(request):
     imagen_grafico = None
@@ -91,13 +92,47 @@ def main(request):
             else:
                 conclusion += "No se obtendrá retorno de una inversión a estas criptomonedas en el próximo mes. "
                 conclusion += "Se espera una disminución de la tasa de cambio por debajo del precio actual."
+            # CLUSTER -----------------------------------------------------
+            cluster_model_path = os.path.join(settings.BASE_DIR, 'CryptoApp', 'models', 'cluster_model.pkl')
+            cluster_scaler_path = os.path.join(settings.BASE_DIR, 'CryptoApp', 'models', 'cluster_scaler.pkl')
+            cluster_data_path = os.path.join(settings.BASE_DIR, 'CryptoApp', 'models', 'cluster_timeseries.csv')
+            with open(cluster_model_path, 'rb') as f:
+                cluster_model = pickle.load(f)
+            with open(cluster_scaler_path, 'rb') as f:
+                cluster_scaler = pickle.load(f)
+            df_cluster = pd.read_csv(cluster_data_path, sep=';', index_col=0, parse_dates=True)
+            df_cluster.asfreq('h')
 
+            sample_df = df[[f'price_{cryptocurrency}']].apply(lambda x: x.rolling(window=12).mean()).dropna()
+            sample_df = sample_df.iloc[::24]
+            X = sample_df.transpose()
+            X_scaled = cluster_scaler.fit_transform(X)
+            clusters = cluster_model.predict(X_scaled)
+            print("MI NUEVO CLUSTER ES", clusters)
+            plt.figure(figsize=(10, 6), facecolor='black')
+            plt.axes().set_facecolor('black')
+            plt.plot(df_cluster.index, df_cluster[f'price_c{clusters[0]}_pc1'], color='blue', linewidth=1, label='Datos Originales')
+            plt.tick_params(axis='x', colors='white')
+            plt.tick_params(axis='y', colors='white')
+            plt.grid(alpha=0.3, linestyle='--', color='gray')
+            plt.tight_layout()
+            plt.gca().spines['top'].set_visible(False)
+            plt.gca().spines['right'].set_visible(False)
+
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+
+            image_png = buffer.getvalue()
+            buffer.close()
+            graphic2 = base64.b64encode(image_png).decode('utf-8')
             context = {
                 'form': form,
                 'imagen_grafico': 'data:image/png;base64,' + graphic,
                 'conclusion': conclusion,
+                'cluster_id': clusters[0],
+                'imagen_grafico_cluster': 'data:image/png;base64,' + graphic2,
             }
-
             return render(request, 'main.html', context=context)
 
     context = {

@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f7fd; /* Color de fondo para toda la página */
+            background-color: #f0f7fd;
             margin: 0;
             padding: 0;
         }
@@ -18,18 +18,18 @@
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            background-color: #ffffff; /* Color de fondo para el contenido */
+            background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            text-align: center; /* Centrar contenido */
+            text-align: center;
         }
         h1 {
-            color: #007bff; /* Azul primario */
+            color: #007bff;
             font-weight: 700;
             margin-bottom: 30px;
         }
         .form-container {
-            margin-bottom: 20px; /* Espacio bajo el formulario */
+            margin-bottom: 20px;
         }
         form {
             max-width: 400px;
@@ -37,7 +37,7 @@
             padding: 20px;
             border: 1px solid #dee2e6;
             border-radius: 8px;
-            background-color: #f8f9fa; /* Color de fondo para el formulario */
+            background-color: #f8f9fa;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         form .form-group {
@@ -49,7 +49,7 @@
         }
         .grafico-container {
             text-align: center;
-            position: relative; /* Contenedor relativo para elementos posicionados dentro de él */
+            position: relative;
         }
         .grafico-container img {
             max-width: 100%;
@@ -60,11 +60,11 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .texto-grafico {
-            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
-            border: 2px solid #007bff; /* Borde azul */
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid #007bff;
             border-radius: 8px;
             padding: 10px;
-            z-index: 1; /* Capa superior */
+            z-index: 1;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
     </style>
@@ -85,6 +85,14 @@
                     {{ conclusion }}
                 </div>
                 <img src="{{ imagen_grafico }}" alt="Gráfico de Ejemplo">
+            {% endif %}
+        </div>
+        <div class="grafico-container">
+            {% if imagen_grafico_cluster %}
+                <div class="texto-grafico">
+                    La tendencia de la criptomoneda está asociada al grupo {{ cluster_id }}:
+                </div>
+                <img src="{{ imagen_grafico_cluster }}" alt="Gráfico de Ejemplo">
             {% endif %}
         </div>
     </div>
