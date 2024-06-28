@@ -1,27 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seleccionar Criptomoneda y Fecha</title>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7fd; /* Color de fondo para toda la página */
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9; /* Color de fondo para toda la página */
         }
         .container {
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
             background-color: #ffffff; /* Color de fondo para el contenido */
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Centrar contenido */
+        }
+        h1 {
+            color: #007bff; /* Azul primario */
+            font-weight: 700;
+            margin-bottom: 30px;
         }
         .form-container {
             margin-bottom: 20px; /* Espacio bajo el formulario */
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa; /* Color de fondo para el formulario */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form .form-group {
+            margin-bottom: 15px;
+        }
+        form .btn-primary {
+            width: 100%;
+            padding: 10px;
         }
         .grafico-container {
             text-align: center;
@@ -32,19 +56,16 @@
             height: auto;
             display: block;
             margin: 20px auto;
-            border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .texto-grafico {
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
             border: 2px solid #007bff; /* Borde azul */
             border-radius: 8px;
             padding: 10px;
-            margin-top: -30px; /* Ajuste negativo para superponer sobre la parte superior del gráfico */
-            display: inline-block; /* Hace que el div se comporte como un bloque en línea */
-            position: relative; /* Elemento posicionado relativo al contenedor .grafico-container */
-            z-index: 1; /* Para que esté sobre el gráfico */
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            z-index: 1; /* Capa superior */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -78,7 +99,7 @@
             $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
-                endDate: '2023-12-31T23:00:00'
+                endDate: '2023-12-31'
             });
         });
     </script>

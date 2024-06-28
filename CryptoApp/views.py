@@ -23,7 +23,7 @@ def main(request):
     if request.method == 'POST':
         form = CriptoForm(request.POST)
         if form.is_valid():
-            cryptocurrency = form.cleaned_data['criptomoneda']
+            cryptocurrency = form.cleaned_data['criptomoneda'].lower()
             date = form.cleaned_data['fecha']
 
             model_path = os.path.join(settings.BASE_DIR, 'CryptoApp', 'models', 'model.pkl')
@@ -38,7 +38,6 @@ def main(request):
             df = df.set_index('timestamp')
             df.asfreq('h')
             # CRIPTOMONEDA DATOS
-            cryptocurrency = 'xrp'
             df_data = df[[f'price_{cryptocurrency}', f'volume_{cryptocurrency}']].iloc[-8760:]
             df_price = pd.DataFrame(df_data[f'price_{cryptocurrency}'])
             df_price.columns = ['price']
@@ -60,9 +59,9 @@ def main(request):
             plt.axhline(y=df_price['price'][-1], color='green', linewidth=0.5, label='Máximo Predicciones')
             plt.axvline(x=first_max_index, color='orange', linewidth=0.5, label='Primera Coincidencia Máximo')
             plt.axvline(x=df_price.index[-1], color='green', linewidth=0.5, label='Primera Coincidencia Máximo')
-            plt.tick_params(axis='x', colors='white')  # Color de las etiquetas del eje X
-            plt.tick_params(axis='y', colors='white')  # Color de las etiquetas del eje Y
-            plt.grid(alpha=0.3, linestyle='--', color='gray')  # Ejemplo de grid con transparencia y estilo punteado
+            plt.tick_params(axis='x', colors='white')
+            plt.tick_params(axis='y', colors='white')
+            plt.grid(alpha=0.3, linestyle='--', color='gray')
             plt.tight_layout()
             plt.gca().spines['top'].set_visible(False)
             plt.gca().spines['right'].set_visible(False)
@@ -81,9 +80,9 @@ def main(request):
             increment = price_diff / actual_price * 100
 
             conclusion = ""
-            if increment > 100:
+            if increment > 0:
                 conclusion += f"Se espera obtener utilidades por inversión en {cryptocurrency} en el próximo mes."
-                if increment > 50:
+                if increment > 40:
                     conclusion += ("Sí se recomienda invertir, se espera una tasa de cambio máxima de " +
                                    f"{round(max_predicted_price, 4)} el {first_max_index}, un incremento del {round(increment, 2)}%")
                 else:
