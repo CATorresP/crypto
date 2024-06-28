@@ -20,8 +20,12 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .form-container {
+            margin-bottom: 20px; /* Espacio bajo el formulario */
+        }
         .grafico-container {
             text-align: center;
+            position: relative; /* Contenedor relativo para elementos posicionados dentro de él */
         }
         .grafico-container img {
             max-width: 100%;
@@ -31,29 +35,37 @@
             border-radius: 8px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-        .mensaje {
-            text-align: center;
-            margin-top: 20px;
+        .texto-grafico {
+            background-color: #ffffff;
+            border: 2px solid #007bff; /* Borde azul */
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: -30px; /* Ajuste negativo para superponer sobre la parte superior del gráfico */
+            display: inline-block; /* Hace que el div se comporte como un bloque en línea */
+            position: relative; /* Elemento posicionado relativo al contenedor .grafico-container */
+            z-index: 1; /* Para que esté sobre el gráfico */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Seleccionar Criptomoneda y Fecha</h1>
-
-        <!-- Formulario para ingresar datos -->
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
-
-        {% if imagen_grafico %}
-            <div class="grafico-container">
-                <h2>Gráfico Generado:</h2>
+        <h1>ANALIZADOR DE CRIPTOMONEDAS</h1>
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+        <div class="grafico-container">
+            {% if imagen_grafico %}
+                <div class="texto-grafico">
+                    {{ conclusion }}
+                </div>
                 <img src="{{ imagen_grafico }}" alt="Gráfico de Ejemplo">
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

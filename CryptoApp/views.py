@@ -19,6 +19,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 def main(request):
     imagen_grafico = None
+    form = CriptoForm()
     if request.method == 'POST':
         form = CriptoForm(request.POST)
         if form.is_valid():
@@ -66,14 +67,6 @@ def main(request):
             plt.gca().spines['top'].set_visible(False)
             plt.gca().spines['right'].set_visible(False)
 
-            #buffer = io.BytesIO()
-            #plt.savefig(buffer, format='png')
-            #buffer.seek(0)
-
-            # Convertir el gráfico a formato base64 para incrustarlo en la plantilla
-            #image_png = buffer.getvalue()
-            #buffer.close()
-            #graphic = urllib.parse.quote(image_png)
             buffer = io.BytesIO()
             plt.savefig(buffer, format='png')
             buffer.seek(0)
@@ -82,22 +75,35 @@ def main(request):
             buffer.close()
             graphic = base64.b64encode(image_png).decode('utf-8')
 
-            # Renderizar la plantilla con el gráfico generado
-            return render(request, 'main.html', {'imagen_grafico': 'data:image/png;base64,' + graphic})
+            actual_price = df_price['price'][-1]
+            max_predicted_price = df_predictions['price'].max()
+            price_diff = max_predicted_price - actual_price
+            increment = price_diff / actual_price * 100
 
-            # Renderizar la plantilla con el gráfico generado
-            #return render(request, 'main.html', {'imagen_grafico': 'data:image/png;base64,' + graphic})
+            conclusion = ""
+            if increment > 100:
+                conclusion += f"Se espera obtener utilidades por inversión en {cryptocurrency} en el próximo mes."
+                if increment > 50:
+                    conclusion += ("Sí se recomienda invertir, se espera una tasa de cambio máxima de " +
+                                   f"{round(max_predicted_price, 4)} el {first_max_index}, un incremento del {round(increment, 2)}%")
+                else:
+                    conclusion += ("No se recomienda invertir, se espera una tasa de cambio máxima de " +
+                                   f"{round(max_predicted_price, 4)} el {first_max_index}, un pequeño incremento del {round(increment, 2)}%")
+            else:
+                conclusion += "No se obtendrá retorno de una inversión a estas criptomonedas en el próximo mes. "
+                conclusion += "Se espera una disminución de la tasa de cambio por debajo del precio actual."
 
-            #plt.savefig('static/images/grafico.png', dpi=300, bbox_inches='tight', pad_inches=0)
+            context = {
+                'form': form,
+                'imagen_grafico': 'data:image/png;base64,' + graphic,
+                'conclusion': conclusion,
+            }
 
-            #plt.show()
-            #return HttpResponse(f"Seleccionaste {cryptocurrency} en la fecha {date}.")
-    else:
-        form = CriptoForm()
+            return render(request, 'main.html', context=context)
+
     context = {
         'form': form,
         'imagen_grafico': imagen_grafico,
     }
-
 
     return render(request, 'main.html', context)
